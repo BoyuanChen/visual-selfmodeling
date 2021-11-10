@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+   <link name="${prefix}gripper_rail_link">
+      <visual>
+         <origin xyz="0 0 0" rpy="0 0 1.57" />
+         <geometry>
+            <mesh filename="package://widowx_arm_description/meshes/gripper_rail_link.stl"/>
+         </geometry>
+         <xacro:material_black />
+      </visual>
+      <collision>
+         <origin xyz="0 0 0" rpy="0 0 1.57" />
+         <geometry>
+            <mesh filename="package://widowx_arm_description/meshes/gripper_rail_link.stl"/>
+         </geometry>
+      </collision>
+      <inertial>
+         <origin xyz="0 0 0" rpy="0 0 0" />
+         <mass value="1" />
+         <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+   </link>
+   <!--link name="${prefix}gripper_aux_link">
+   </link-->
+   <link name="${prefix}gripper_1_link">
+      <visual>
+         <origin xyz="0 -0.0007 0" rpy="0 0 1.57" />
+         <geometry>
+            <mesh filename="package://widowx_arm_description/meshes/gripper_hand_fixed_link.stl"/>
+         </geometry>
+         <xacro:material_black />
+      </visual>
+      <collision>
+         <origin xyz="0 -0.0007 0" rpy="0 0 1.57" />
+         <geometry>
+            <mesh filename="package://widowx_arm_description/meshes/gripper_hand_fixed_link.stl"/>
+         </geometry>
+      </collision>
+      <inertial>
+         <origin xyz="0 0 0" rpy="0 0 0" />
+         <mass value="1" />
+         <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+   </link>
+   <link name="${prefix}gripper_2_link">
+      <visual>
+         <origin xyz="0 0.0007 0" rpy="0 0 -1.57" />
+         <geometry>
+            <mesh filename="package://widowx_arm_description/meshes/gripper_hand_fixed_link.stl"/>
+         </geometry>
+         <xacro:material_black />
+      </visual>
+      <collision>
+         <origin xyz="0 0.0007 0" rpy="0 0 -1.57" />
+         <geometry>
+            <mesh filename="package://widowx_arm_description/meshes/gripper_hand_fixed_link.stl"/>
+         </geometry>
+      </collision>
+      <inertial>
+         <origin xyz="0 0 0" rpy="0 0 0" />
+         <mass value="1" />
+         <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+   </link>
+   <joint name="${prefix}joint_6" type="fixed">
+      <origin xyz = "0 0 ${M_SCALE*43}" rpy="0 0 0" />
+      <parent link="${prefix}wrist_2_link" />
+      <child link="${prefix}gripper_rail_link" />
+      <axis xyz="0 0 1" />
+   </joint>
+   <joint name="${prefix}gripper_joint" type="prismatic">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}gripper_rail_link" />
+      <child link="${prefix}gripper_1_link" />
+      <axis xyz="0 -1 0" />
+      <limit lower="0.002" upper="0.031" effort="0" velocity="0.5" />
+   </joint>
+   <joint name="${prefix}gripper_prismatic_joint_2" type="prismatic">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}gripper_rail_link" />
+      <child link="${prefix}gripper_2_link" />
+      <mimic joint="${prefix}gripper_joint" />
+      <axis xyz="0 1 0" />
+      <limit lower="0.002" upper="0.031" effort="0" velocity="0.5" />
+   </joint>
+</robot>

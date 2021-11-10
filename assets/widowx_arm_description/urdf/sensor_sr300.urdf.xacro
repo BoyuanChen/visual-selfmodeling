@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+
+<robot name="sensor_sr300" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="material_black">
+    <material name="black">
+      <color rgba="0.1 0.1 0.1 1"/>
+    </material>
+  </xacro:property>
+
+  <!-- Intel SR300 parameters -->
+  <xacro:property name="sr300_cam_offset_px" value="0.330" />
+  <xacro:property name="sr300_cam_offset_py" value="0.0" />
+  <xacro:property name="sr300_cam_offset_pz" value="0.380" />
+
+  <xacro:property name="sr300_cam_rgb_px" value="0.012"/>
+  <xacro:property name="sr300_cam_rgb_py" value="0.003"/>
+  <xacro:property name="sr300_cam_rgb_pz" value="0.0"/>
+
+  <xacro:property name="sr300_cam_depth_offset" value="-0.024"/>
+
+  <xacro:macro name="sensor_sr300" params="parent">
+
+    <!--
+    ==  Intel SR300 body joints & links ==
+    -->
+    
+    <!-- camera_sr300 body -->
+    <joint name="camera_joint" type="fixed">
+      <origin xyz="${sr300_cam_offset_px} ${sr300_cam_offset_py} ${sr300_cam_offset_pz}" rpy="0 1.16 3.14"/>
+      <parent link="${parent}"/>
+      <child link="camera_sr300" />
+    </joint>
+    <link name="camera_sr300">
+      <visual>
+       <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+         <mesh filename="package://widowx_arm_description/meshes/sensors/sr300.stl" />
+        </geometry>
+        <xacro:insert_block name="material_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://widowx_arm_description/meshes/sensors/sr300.stl" scale="2.0 2.0 2.0" />
+        </geometry>
+      </collision>
+ 
+      <!-- This inertial field needs doesn't contain reliable data!! -->
+      <inertial>
+        <mass value="0.15" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                 iyy="0.000498940" iyz="0.0"
+                 izz="0.003879257" />
+      </inertial>
+    </link>
+    <gazebo reference="camera_sr300">
+      <material>Gazebo/Blue</material>
+      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+    </gazebo>
+    
+    <!--
+    ==  Intel SR300 stand ==
+    -->
+    
+    <!-- camera_sr300 body -->
+    <joint name="camera_stand_joint" type="fixed">
+      <origin xyz="0.37 0.0 0.0" rpy="1.57 0 3.14"/>
+      <parent link="${parent}"/>
+      <child link="camera_sr300_stand" />
+    </joint>
+    <link name="camera_sr300_stand">
+      <visual>
+       <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+         <mesh filename="package://widowx_arm_description/meshes/sensors/sr300_stand.stl" />
+        </geometry>
+        <xacro:insert_block name="material_black"/>
+      </visual>
+      <collision>
+        <origin xyz="-0.02 0.185 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.126 0.370 0.185"/>
+        </geometry>
+      </collision>
+ 
+      <!-- This inertial field needs doesn't contain reliable data!! -->
+      <inertial>
+        <mass value="0.15" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                 iyy="0.000498940" iyz="0.0"
+                 izz="0.003879257" />
+      </inertial>
+    </link>
+
+    <!--
+    ==  RGB joints & links ==
+    -->
+
+    <joint name="camera_rgb_joint" type="fixed">
+      <origin xyz="${sr300_cam_rgb_px} ${sr300_cam_rgb_py} ${sr300_cam_rgb_pz}" rpy="0 0 0"/>
+      <parent link="camera_sr300"/>
+      <child link="camera_rgb_frame" />
+    </joint>
+    <link name="camera_rgb_frame"/>
+
+    <joint name="camera_rgb_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_rgb_frame" />
+      <child link="camera_rgb_optical_frame" />
+    </joint>
+    <link name="camera_rgb_optical_frame"/>
+  
+
+    <!--
+    ==  Depth joints & links ==
+    -->
+
+    <joint name="camera_depth_joint" type="fixed">
+        <origin xyz="0 ${sr300_cam_depth_offset} 0" rpy="0 0 0" />
+        <parent link="camera_rgb_frame" />
+        <child link="camera_depth_frame" />
+    </joint>
+    <link name="camera_depth_frame"/>
+
+    <joint name="camera_depth_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+        <parent link="camera_depth_frame" />
+        <child link="camera_depth_optical_frame" />
+    </joint>
+    <link name="camera_depth_optical_frame"/>
+    
+    <!-- Simulation sensor -->
+    <gazebo reference="camera_sr300">  
+      <sensor type="depth" name="camera_sr300">
+        <always_on>true</always_on>
+        <update_rate>20.0</update_rate>
+        <camera>
+          <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
+          <image>
+            <format>B8G8R8</format>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>8.0</far>
+          </clip>
+        </camera>
+        <plugin name="kinect_camera_controller" filename="libgazebo_ros_openni_kinect.so">
+          <cameraName>camera_sr300</cameraName>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>10</updateRate>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <frameName>camera_depth_optical_frame</frameName>
+          <baseline>0.1</baseline>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <pointCloudCutoff>0.2</pointCloudCutoff>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

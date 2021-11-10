@@ -1,0 +1,19 @@
+lr: 0.00005 # more_layers: 0.00005, one layer: 0.0001
+seed: 1
+if_cuda: True
+gamma: 0.5
+log_dir: 'logs'
+train_batch: 4800
+val_batch: 4800
+test_batch: 4800
+task_batch: 9600
+num_workers: 8
+model_name: 'state-condition'
+data_filepath: './saved_meshes'
+lr_schedule: [10000000]
+num_gpus: 1
+epochs: 2000
+loss_type: 'siren_sdf'
+dof: 4
+coord_system: 'cartesian'
+tag: 'new-global-siren-sdf'

@@ -1,0 +1,8 @@
+*.*~
+*~
+saved_meshes*
+__pycache__
+.DS_Store
+*/logs_*
+build
+*.zip

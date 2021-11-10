@@ -1,0 +1,52 @@
+<launch>
+
+  <arg name="robot_name"                    default=""/>
+  <arg name="robot_model"                   default="$(arg robot_name)"/>
+  <arg name="use_default_gripper_bar"       default="true"/>
+  <arg name="use_default_gripper_fingers"   default="true"/>
+  <arg name="use_world_frame"               default="true"/>
+  <arg name="external_urdf_loc"             default=""/>
+  <arg name="load_gazebo_configs"           default="false"/>
+  <arg name="jnt_pub_gui"                   default="false"/>
+  <arg name="use_joint_pub"                 default="false"/>
+  <arg name="use_default_rviz"              default="true"/>
+  <arg name="rvizconfig"                    default="$(find interbotix_descriptions)/rviz/description.rviz" />
+  <arg name="model"                         default="$(find interbotix_descriptions)/urdf/$(arg robot_model).urdf.xacro
+                                                     robot_name:=$(arg robot_name)
+                                                     use_world_frame:=$(arg use_world_frame)
+                                                     use_default_gripper_bar:=$(arg use_default_gripper_bar)
+                                                     use_default_gripper_fingers:=$(arg use_default_gripper_fingers)
+                                                     external_urdf_loc:=$(arg external_urdf_loc)
+                                                     load_gazebo_configs:=$(arg load_gazebo_configs)"/>
+
+  <param name="$(arg robot_name)/robot_description"  command="$(find xacro)/xacro --inorder $(arg model)" />
+
+  <node if="$(arg jnt_pub_gui)"
+    name="joint_state_publisher_gui"
+    pkg="joint_state_publisher_gui"
+    type="joint_state_publisher_gui"
+    ns="$(arg robot_name)">
+  </node>
+
+  <node if="$(arg use_joint_pub)"
+    name="joint_state_publisher"
+    pkg="joint_state_publisher"
+    type="joint_state_publisher"
+    ns="$(arg robot_name)">
+  </node>
+
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+    ns="$(arg robot_name)">
+  </node>
+
+  <node if="$(arg use_default_rviz)"
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(arg rvizconfig)"
+    ns="$(arg robot_name)"/>
+
+</launch>

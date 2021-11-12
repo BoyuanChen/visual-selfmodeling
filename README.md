@@ -8,7 +8,7 @@
 Columbia University
 <br>
 
-### [Project Website](https://robot-morphology.cs.columbia.edu/) | [Video](https://youtu.be/aoCAplokoWE) | [Paper](http://arxiv.org/abs/)
+### [Project Website](https://robot-morphology.cs.columbia.edu/) | [Video](https://youtu.be/aoCAplokoWE) | [Paper](http://arxiv.org/abs/2111.06389)
 
 ## Overview
 This repo contains the PyTorch implementation for paper "Full-Body Visual Self-Modeling of Robot Morphologies".

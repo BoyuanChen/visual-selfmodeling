@@ -20,10 +20,10 @@ This repo contains the PyTorch implementation for paper "Full-Body Visual Self-M
 If you find our paper or codebase helpful, please consider citing:
 
 ```
-@article{chen2021xxx,
+@article{chen2021morphology,
   title={Full-Body Visual Self-Modeling of Robot Morphologies},
   author={Chen, Boyuan and Kwiatkowskig, Robert and Vondrick, Carl and Lipson, Hod},
-  journal={arXiv preprint arXiv:xxxx.xxxxx},
+  journal={arXiv preprint arXiv:2111.06389},
   year={2021}
 }
 ```
